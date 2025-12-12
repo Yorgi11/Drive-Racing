@@ -15,8 +15,7 @@ public class GameManager : MonoBehaviour
     private ProceduralLandscape m_pl;
     private void Start()
     {
-        m_pl = GetComponent<ProceduralLandscape>();
-        m_pl.Generate();
+        m_pl = FindFirstObjectByType<ProceduralLandscape>();
         SpawnPickUps();
     }
     private void SpawnPickUps()
