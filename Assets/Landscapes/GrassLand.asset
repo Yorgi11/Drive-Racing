@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a68dacdbd2c1a43b60c036485b330c, type: 3}
+  m_Name: GrassLand
+  m_EditorClassIdentifier: Assembly-CSharp::LandscapeLayerProfile
+  layers:
+  - color: {r: 0.09803922, g: 0.4745098, b: 0.14564268, a: 1}
+    texture: {fileID: 0}
+    thickness: 0.5
+    textureTilingX: 1
+    textureTilingY: 1
+    textureBlend: 0
+    blendIntoPrevious: 0.1
+    blendIntoNext: 0
+  - color: {r: 0.064079754, g: 0.3018868, b: 0.09380563, a: 1}
+    texture: {fileID: 0}
+    thickness: 0.15
+    textureTilingX: 1
+    textureTilingY: 1
+    textureBlend: 0
+    blendIntoPrevious: 0.5
+    blendIntoNext: 0.2
+  - color: {r: 0.33962262, g: 0.17088605, b: 0.08810965, a: 1}
+    texture: {fileID: 0}
+    thickness: 8
+    textureTilingX: 1
+    textureTilingY: 1
+    textureBlend: 0
+    blendIntoPrevious: 0
+    blendIntoNext: 0.1
