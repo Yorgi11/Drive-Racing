@@ -12,7 +12,7 @@ public class PickupItem : MonoBehaviour
     void Update()
     {
         m_sprite.rotation = Quaternion.Euler(0f, m_yRot, 0f);
-        m_yRot += Time.deltaTime;
+        m_yRot += Time.deltaTime * m_rotateSpeed;
         if (m_yRot > 359.99f) m_yRot = 0f;
     }
 }

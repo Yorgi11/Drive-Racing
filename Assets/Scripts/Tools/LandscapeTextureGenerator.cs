@@ -9,17 +9,13 @@ public class LandscapeTextureGenerator : MonoBehaviour
     [Header("Texture Output")]
     [SerializeField] private int m_width = 512;
     [SerializeField] private int m_height = 512;
-    [Tooltip("Name used for the generated texture asset (optional if you want to export).")]
+    [Tooltip("Name used for the generated texture asset")]
     [SerializeField] private string m_textureName = "LandscapeLayeredTex";
 
     private MeshRenderer m_renderer;
-    private void Awake()
+    public void Init()
     {
         m_renderer = GetComponent<MeshRenderer>();
-    }
-    private void Start()
-    {
-        GenerateTexture();
     }
     [ContextMenu("Generate Layered Texture")]
     public void GenerateTexture()

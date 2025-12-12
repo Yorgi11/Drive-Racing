@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ac159de3f629945b0a05fb9b299cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupItem
-  m_rotateSpeed: 10
+  m_rotateSpeed: 200
   m_sprite: {fileID: 2168937841191774582}
 --- !u!58 &6321752100695201667
 CircleCollider2D:

@@ -43,11 +43,10 @@ public class ProceduralLandscape : MonoBehaviour
     private EdgeCollider2D m_edgeCollider;
     List<Vector2> m_surfacePoints = new();
     public List<Vector2> SurfacePoints { get { return m_surfacePoints; } }
-    private void Awake()
+    public void Init()
     {
         m_meshFilter = GetComponent<MeshFilter>();
         m_edgeCollider = GetComponent<EdgeCollider2D>();
-        Generate();
     }
     [ContextMenu("Regenerate Road")]
     public void Generate()
