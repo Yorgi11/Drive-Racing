@@ -15,7 +15,7 @@ MonoBehaviour:
   layers:
   - color: {r: 0.09803922, g: 0.4745098, b: 0.14564268, a: 1}
     texture: {fileID: 0}
-    thickness: 0.3
+    thickness: 0.075
     textureTilingX: 1
     textureTilingY: 1
     textureBlend: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
     blendIntoNext: 0
   - color: {r: 0.064079754, g: 0.3018868, b: 0.09380563, a: 1}
     texture: {fileID: 0}
-    thickness: 0.15
+    thickness: 0.0375
     textureTilingX: 1
     textureTilingY: 1
     textureBlend: 0

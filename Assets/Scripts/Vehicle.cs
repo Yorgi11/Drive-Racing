@@ -87,7 +87,7 @@ public class Vehicle : MonoBehaviour
             ApplySuspension(ws);
             if (ws.m_drive) ws.m_wheel.AddTorque(input * -m_driveTorque * m_driveMulti);
         }
-        float t = Mathf.InverseLerp(0f, m_groundDistance, m_distanceToGround);
+        float t = Mathf.InverseLerp(0.1f, m_groundDistance, m_distanceToGround);
         float rollFactor = t * t * t;
         m_chassis.AddTorque(input * -m_rollTorque * rollFactor);
         TrackFlips();
