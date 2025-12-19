@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class PickupItem : MonoBehaviour
 {
     [SerializeField] private float m_rotateSpeed;

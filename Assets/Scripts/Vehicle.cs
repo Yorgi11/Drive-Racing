@@ -15,12 +15,16 @@ public class Vehicle : MonoBehaviour
     public float m_driveTorque = 200f;
 
     [Header("Suspension")]
+    [SerializeField] private PhysicsMaterial2D m_tireMaterial;
     [SerializeField] private LayerMask m_groundLayers;
     [SerializeField] private WheelAndSuspension[] m_wheelsAndSuspensions;
 
     [Header("Gas")]
     [SerializeField] private float m_maxGas;
     [SerializeField] private float m_gasConsumptionrate;
+
+    [Header("Upgrades")]
+    [SerializeField] private Upgrades m_upgrades;
 
     private float m_distanceToGround;
     private float m_driveMulti;
@@ -54,12 +58,83 @@ public class Vehicle : MonoBehaviour
         [Header("Drive")]
         public bool m_drive = true;
     }
+    [System.Serializable]
+    public class Upgrades
+    {
+        public int m_wheelsLevel;
+        public Wheels[] m_wheelsUpgrades;
+        public int m_tractionLevel;
+        public Traction[] m_tractionUpgrades;
+        public int m_suspensionLevel;
+        public Suspension[] m_suspensionUpgrades;
+        public int m_engineLevel;
+        public Engine[] m_engineUpgrades;
+        public int m_airControlLevel;
+        public AirControl[] m_airControlUpgrades;
+        public int m_gasTankLevel;
+        public GasTank[] m_gasTankUpgrades;
+        public int m_fuelEfficeincyLevel;
+        public FuelEfficeincy[] m_fuelEfficeincyUpgrades;
+        [System.Serializable]
+        public struct Wheels
+        {
+            public float m_size;
+            public float m_maxRoateSpeed;
+        }
+        [System.Serializable]
+        public struct Traction
+        {
+            public float m_friction;
+        }
+        [System.Serializable]
+        public struct Suspension
+        {
+            public float m_springRestLength;
+            public float m_springStiffness;
+            public float m_springDamping;
+        }
+        [System.Serializable]
+        public struct Engine
+        {
+            public float m_driveTorque;
+        }
+        [System.Serializable]
+        public struct AirControl
+        {
+            public float m_maxBodyRPM;
+            public float m_rollTorque;
+        }
+        [System.Serializable]
+        public struct GasTank
+        {
+            public float m_maxGas;
+        }
+        [System.Serializable]
+        public struct FuelEfficeincy
+        {
+            public float m_gasConsumptionrate;
+        }
+    }
     public void RunStart(Player p)
     {
         m_transform = transform;
+
+        m_maxBodyRPM = m_upgrades.m_airControlUpgrades[m_upgrades.m_airControlLevel].m_maxBodyRPM;
+
+        m_maxWheelRPM = m_upgrades.m_wheelsUpgrades[m_upgrades.m_wheelsLevel].m_maxRoateSpeed;
+        m_driveTorque = m_upgrades.m_engineUpgrades[m_upgrades.m_engineLevel].m_driveTorque;
+
+        m_tireMaterial.friction = m_upgrades.m_tractionUpgrades[m_upgrades.m_tractionLevel].m_friction;
+
+        m_maxGas = m_upgrades.m_gasTankUpgrades[m_upgrades.m_gasTankLevel].m_maxGas;
+        m_gasConsumptionrate = m_upgrades.m_fuelEfficeincyUpgrades[m_upgrades.m_fuelEfficeincyLevel].m_gasConsumptionrate;
         int driveCount = 0;
         foreach (WheelAndSuspension ws in m_wheelsAndSuspensions)
         {
+            ws.m_springStiffness = m_upgrades.m_suspensionUpgrades[m_upgrades.m_suspensionLevel].m_springStiffness;
+            ws.m_springDamping = m_upgrades.m_suspensionUpgrades[m_upgrades.m_suspensionLevel].m_springDamping;
+            ws.m_springRestLength = m_upgrades.m_suspensionUpgrades[m_upgrades.m_suspensionLevel].m_springRestLength;
+            ws.m_wheel.transform.localScale = Vector2.one * m_upgrades.m_wheelsUpgrades[m_upgrades.m_wheelsLevel].m_size;
             if (ws.m_drive) driveCount++;
         }
         m_driveMulti = 1f / driveCount;
@@ -69,13 +144,13 @@ public class Vehicle : MonoBehaviour
     }
     public void RunUpdate()
     {
+        Kph = m_chassis.linearVelocityX * 3.6f;
         if (CurrentGas <= 0f) return;
         foreach (WheelAndSuspension ws in m_wheelsAndSuspensions)
         {
             LimitRPM(ws.m_wheel, m_maxWheelRPM);
         }
         LimitRPM(m_chassis, m_maxBodyRPM);
-        Kph = m_chassis.linearVelocityX * 3.6f;
         CurrentGas -= m_gasConsumptionrate * Time.deltaTime;
     }
     public void RunFixedUpdate(float input)
@@ -89,7 +164,7 @@ public class Vehicle : MonoBehaviour
         }
         float t = Mathf.InverseLerp(0.1f, m_groundDistance, m_distanceToGround);
         float rollFactor = t * t * t;
-        m_chassis.AddTorque(input * -m_rollTorque * rollFactor);
+        m_chassis.AddTorque(input * m_rollTorque * rollFactor);
         TrackFlips();
     }
     private void ApplySuspension(WheelAndSuspension ws)
@@ -157,7 +232,7 @@ public class Vehicle : MonoBehaviour
         if (closestDist == float.MaxValue) m_distanceToGround = m_groundDistance;
         else m_distanceToGround = closestDist;
         // Grounded if >= 50% of wheels detect ground
-        IsGrounded = groundedWheels >= (wheelCount * 0.5f);
+        IsGrounded = groundedWheels > (wheelCount * 0.5f);
     }
     private void TrackFlips()
     {
@@ -168,13 +243,13 @@ public class Vehicle : MonoBehaviour
         if (!IsGrounded)
         {
             m_airRotationAccum += delta;
-            while (m_airRotationAccum >= 300f)
+            while (m_airRotationAccum >= 360f)
             {
                 BackFlips++;
                 m_airRotationAccum -= 360f;
                 OnBackFlip();
             }
-            while (m_airRotationAccum <= -300f)
+            while (m_airRotationAccum <= -360f)
             {
                 FrontFlips++;
                 m_airRotationAccum += 360f;
@@ -208,4 +283,22 @@ public class Vehicle : MonoBehaviour
             }
         }
     }
+    public void HandleTrigger(Collider2D collision)
+    {
+        if (collision != null)
+        {
+            GameObject obj = collision.gameObject;
+            if (obj.layer == m_player.m_coinLayer)
+            {
+                m_player.AddValue(Player.ValueType.Coin);
+                Destroy(obj);
+            }
+            else if (obj.layer == m_player.m_gasLayer)
+            {
+                m_player.AddValue(Player.ValueType.Gas);
+                Destroy(obj);
+            }
+        }
+    }
+
 }
